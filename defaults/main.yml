@@ -1,9 +1,14 @@
 ---
+debug_exec: true
 # Install options
-victoriametrics_install_standalone: false
-victoriametrics_install_vmutils: false
+victoriametrics_install_standalone: true
+victoriametrics_install_cluster: false # todo
+victoriametrics_install_vmutils: true
+
+victoriametrics_cluster_role: [ vminsert, vmselect, vmstorage ]
 victoriametrics_version: "1.55.1"
 victoriametrics_vmutils_version: "1.55.1"
+victoriametrics_cluster_version: "1.55.1"
 
 victoriametrics_system_user: "victoriametrics"
 victoriametrics_system_group: "{{ victoriametrics_system_user }}"

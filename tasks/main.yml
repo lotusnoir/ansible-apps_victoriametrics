@@ -10,10 +10,19 @@
 - import_tasks: install.yml
 - import_tasks: configure.yml
 
-- name: Ensure VictoriaMetrics service is enabled on boot
-  become: true
+- name: "Ensure VictoriaMetrics service is enabled on boot"
   systemd:
     daemon_reload: true
     name: victoriametrics
     enabled: true
     state: started
+  when: victoriametrics_install_standalone
+
+- name: "Ensure cluster service is enabled on boot"
+  systemd:
+    daemon_reload: true
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  with_items: "{{ victoriametrics_cluster_role }}"
+  when: victoriametrics_install_cluster

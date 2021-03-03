@@ -29,7 +29,14 @@
   failed_when: false
   check_mode: false
   register: victoriametrics_installed_version
-  when: victoriametrics_binary.stat.exists|bool
+  when: victoriametrics_binary.stat.exists
+
+- name: "DEBUG: show victoria metrics version"
+  debug:
+    msg: "{{ victoriametrics_installed_version.stdout }}"
+  when:
+    - debug_exec
+    - victoriametrics_binary.stat.exists
 
 # Victoriametrics utils version
 - name: Check if vmutils are installed
@@ -45,4 +52,56 @@
   failed_when: false
   check_mode: false
   register: vmutils_installed_version
-  when: vmutils_binary.stat.exists|bool
+  when: vmutils_binary.stat.exists
+
+- name: "DEBUG: show vmutils version"
+  debug:
+    msg: "{{ vmutils_installed_version.stdout }}"
+  when:
+    - debug_exec
+    - vmutils_binary.stat.exists
+
+# Victoriametrics cluster version
+- name: Check if cluster role is installed
+  stat:
+    path: "/usr/local/bin/{{ item }}-prod"
+  changed_when: false
+  check_mode: false
+  register: cl_role_binary
+  with_items: "{{ victoriametrics_cluster_role }}"
+
+#- name: "DEBUG: show cluster role exists"
+#  debug:
+#    msg: "{{ cl_role_binary.results }}"
+#  when:
+#    - debug_exec
+
+- name: Check current role version
+  command: "/usr/local/bin/{{ item.item }}-prod --version"
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register: cl_role_installed_version
+  with_items: "{{ cl_role_binary.results }}"
+  when: item.stat.exists
+
+- name: "DEBUG: show cluster role version"
+  debug:
+    msg: "{{ cl_role_installed_version.results | json_query('[*].stdout') }}"
+  when:
+    - debug_exec
+
+- name: "set version facts"
+  set_fact:
+    cluster_role_version: "{{ cl_role_installed_version.results | json_query('[*].stdout') }}"
+
+- name: "set exists facts"
+  set_fact:
+    cluster_binary_exists: true
+  when: cluster_role_version != ""
+
+- name: "DEBUG: show "
+  debug:
+    var: cluster_binary_exists
+  when:
+    - debug_exec

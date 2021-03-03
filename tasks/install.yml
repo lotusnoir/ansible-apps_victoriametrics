@@ -36,12 +36,12 @@
       file:
         path: /usr/local/bin/victoria-metrics-prod
         state: absent
-      when:  victoriametrics_binary.stat.exists|bool and
-             victoriametrics_version not in victoriametrics_installed_version.stderr
+      when:  victoriametrics_binary.stat.exists and
+             victoriametrics_version not in victoriametrics_installed_version.stdout
 
     - name: Download and unarchive VictoriaMetrics release binary
       unarchive:
-        src: "{{ victoriametrics_download_url }}"
+        src: "{{ victoriametrics_url }}"
         dest: /usr/local/bin
         mode: 0751
         owner: "{{ victoriametrics_system_user }}"
@@ -50,14 +50,14 @@
       notify: Restart VictoriaMetrics service
       when:
         - not ansible_check_mode
-        - victoriametrics_binary.stat.exists|bool or
-          victoriametrics_version not in victoriametrics_installed_version.stderr
+        - not victoriametrics_binary.stat.exists or
+          victoriametrics_version not in victoriametrics_installed_version.stdout
 
 - when: victoriametrics_install_vmutils|bool
   block:
     - name: Delete existing vmutils version if it's different.
       file:
-        path: "{{ item }}"
+        path: "/usr/local/bin/{{ item }}"
         state: absent
       with_items:
         - vmagent-prod
@@ -66,8 +66,8 @@
         - vmbackup-prod
         - vmctl-prod
         - vmrestore-prod
-      when:  vmutils_binary.stat.exists|bool and
-             victoriametrics_vmutils_version not in vmutils_installed_version.stderr
+      when:  vmutils_binary.stat.exists and
+             victoriametrics_vmutils_version not in vmutils_installed_version.stdout
 
     - name: Download and unarchive vmutils release binary
       unarchive:
@@ -79,5 +79,30 @@
         remote_src: yes
       when:
         - not ansible_check_mode
-        - vmutils_binary.stat.exists|bool or
-          victoriametrics_vmutils_version not in vmutils_installed_version.stderr
+        - not vmutils_binary.stat.exists or
+          victoriametrics_vmutils_version not in vmutils_installed_version.stdout
+
+- when: victoriametrics_install_cluster
+  block:
+    - name: Delete existing cluster binaries version if it's different.
+      file:
+        path: "/usr/local/bin/{{ item }}"
+        state: absent
+      with_items:
+        - "{{ cl_role_binary.results }}"
+      when:  item.stat.exists and
+             victoriametrics_cluster_version not in cluster_role_version
+
+    - name: Download and unarchive cluster release binary
+      unarchive:
+        src: "{{ victoriametrics_cluster_url }}"
+        dest: /usr/local/bin
+        mode: 0751
+        owner: "{{ victoriametrics_system_user }}"
+        group: "{{ victoriametrics_system_group }}"
+        remote_src: yes
+      run_once: true
+      when:
+        - not ansible_check_mode
+        - not cluster_binary_exists or
+          victoriametrics_cluster_version not in cluster_role_version
