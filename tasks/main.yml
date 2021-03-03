@@ -1,0 +1,19 @@
+---
+- name: "End play if distribution not suported"
+  meta: end_host
+  when:
+    - ansible_distribution != "Debian"
+    - ansible_distribution != "Ubuntu"
+    - ansible_distribution != "CentOS"
+
+- import_tasks: preinstall.yml
+- import_tasks: install.yml
+- import_tasks: configure.yml
+
+- name: Ensure VictoriaMetrics service is enabled on boot
+  become: true
+  systemd:
+    daemon_reload: true
+    name: victoriametrics
+    enabled: true
+    state: started

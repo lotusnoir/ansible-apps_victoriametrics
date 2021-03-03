@@ -1,0 +1,17 @@
+---
+# Install options
+victoriametrics_install_standalone: false
+victoriametrics_install_vmutils: false
+victoriametrics_version: "1.55.1"
+victoriametrics_vmutils_version: "1.55.1"
+
+victoriametrics_system_user: "victoriametrics"
+victoriametrics_system_group: "{{ victoriametrics_system_user }}"
+
+# Systemd options
+victoriametrics_data_dir: "/var/lib/victoria-metrics/"
+victoriametrics_retention_period: "12"
+victoriametrics_service_args:
+  storageDataPath: "{{ victoriametrics_data_dir }}"
+  retentionPeriod: "{{ victoriametrics_retention_period }}"
+victoriametrics_max_open_files: 2097152
