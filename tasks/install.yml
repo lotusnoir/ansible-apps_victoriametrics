@@ -30,7 +30,7 @@
     owner: "{{ victoriametrics_system_user }}"
     group: "{{ victoriametrics_system_group }}"
 
-- when: victoriametrics_install_standalone|bool
+- when: victoriametrics_install_standalone
   block:
     - name: Delete existing VictoriaMetrics version if it's different.
       file:
@@ -53,7 +53,7 @@
         - not victoriametrics_binary.stat.exists or
           victoriametrics_version not in victoriametrics_installed_version.stdout
 
-- when: victoriametrics_install_vmutils|bool
+- when: victoriametrics_install_vmutils
   block:
     - name: Delete existing vmutils version if it's different.
       file:
