@@ -30,13 +30,18 @@
     owner: "{{ victoriametrics_system_user }}"
     group: "{{ victoriametrics_system_group }}"
 
+- name: "Install requierements"
+  package:
+    name: "ca-certificates"
+    state: present
+
 - when: victoriametrics_install_standalone
   block:
     - name: Delete existing VictoriaMetrics version if it's different.
       file:
         path: /usr/local/bin/victoria-metrics-prod
         state: absent
-      when:  victoriametrics_binary.stat.exists and
+      when: victoriametrics_binary.stat.exists and
              victoriametrics_version not in victoriametrics_installed_version.stdout
 
     - name: Download and unarchive VictoriaMetrics release binary
@@ -46,7 +51,7 @@
         mode: 0751
         owner: "{{ victoriametrics_system_user }}"
         group: "{{ victoriametrics_system_group }}"
-        remote_src: yes
+        remote_src: true
       notify: Restart VictoriaMetrics service
       when:
         - not ansible_check_mode
@@ -66,8 +71,8 @@
         - vmbackup-prod
         - vmctl-prod
         - vmrestore-prod
-      when:  vmutils_binary.stat.exists and
-             victoriametrics_vmutils_version not in vmutils_installed_version.stdout
+      when: vmutils_binary.stat.exists and
+            victoriametrics_vmutils_version not in vmutils_installed_version.stdout
 
     - name: Download and unarchive vmutils release binary
       unarchive:
@@ -76,7 +81,7 @@
         mode: 0751
         owner: "{{ victoriametrics_system_user }}"
         group: "{{ victoriametrics_system_group }}"
-        remote_src: yes
+        remote_src: true
       when:
         - not ansible_check_mode
         - not vmutils_binary.stat.exists or
@@ -90,8 +95,8 @@
         state: absent
       with_items:
         - "{{ cl_role_binary.results }}"
-      when:  item.stat.exists and
-             victoriametrics_cluster_version not in cluster_role_version
+      when: item.stat.exists and
+            victoriametrics_cluster_version not in cluster_role_version
 
     - name: Download and unarchive cluster release binary
       unarchive:
@@ -100,7 +105,7 @@
         mode: 0751
         owner: "{{ victoriametrics_system_user }}"
         group: "{{ victoriametrics_system_group }}"
-        remote_src: yes
+        remote_src: true
       run_once: true
       when:
         - not ansible_check_mode

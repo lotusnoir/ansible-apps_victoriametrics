@@ -98,7 +98,7 @@
 - name: "set exists facts"
   set_fact:
     cluster_binary_exists: true
-  when: cluster_role_version != ""
+  when: cluster_role_version|length == 0
 
 - name: "DEBUG: show "
   debug:
