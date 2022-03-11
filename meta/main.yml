@@ -1,20 +1,23 @@
 ---
 galaxy_info:
-  author: "Philippe leal"
-  description: "Install and configure victoriametrics"
+  author: lotusnoir
   role_name: apps_victoriametrics
-  license: "license: Apache License, Version 2.0"
+  description: "Deploy [victoriametrics](https://victoriametrics.com/) monitoring system."
+  license: "Apache License, Version 2.0"
   min_ansible_version: 2.8
 
   platforms:
     - name: "Ubuntu"
       versions:
-        - "xenial"
+        - "focal"
         - "bionic"
     - name: "Debian"
       versions:
+        - "bullseye"
         - "buster"
-        - "stretch"
+    - name: "RedHat"
+      versions:
+        - "Maipo"
 
   galaxy_tags:
     - vmutils

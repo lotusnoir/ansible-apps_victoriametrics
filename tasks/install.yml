@@ -1,4 +1,6 @@
 ---
+- import_tasks: preinstall.yml
+
 - name: Create VictoriaMetrics system group
   group:
     name: "{{ victoriametrics_system_group }}"
@@ -111,3 +113,22 @@
         - not ansible_check_mode
         - not cluster_binary_exists or
           victoriametrics_cluster_version not in cluster_role_version
+
+- import_tasks: configure.yml
+
+- name: "Ensure VictoriaMetrics service is enabled on boot"
+  systemd:
+    daemon_reload: true
+    name: victoriametrics
+    enabled: true
+    state: started
+  when: victoriametrics_install_standalone
+
+- name: "Ensure cluster service is enabled on boot"
+  systemd:
+    daemon_reload: true
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  with_items: "{{ victoriametrics_cluster_role }}"
+  when: victoriametrics_install_cluster

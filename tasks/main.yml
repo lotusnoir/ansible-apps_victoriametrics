@@ -1,28 +1,22 @@
 ---
-- name: "End play if distribution not suported"
-  meta: end_host
-  when:
-    - ansible_distribution != "Debian"
-    - ansible_distribution != "Ubuntu"
-    - ansible_distribution != "CentOS"
+### Checks
+- name: Import check tasks
+  import_tasks: check.yml
 
-- import_tasks: preinstall.yml
-- import_tasks: install.yml
-- import_tasks: configure.yml
+### Import vars
+- name: add OS specific variables
+  include_vars: '{{ vars_file }}'
+  with_first_found:
+    - files:
+        - '{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml'
+        - '{{ ansible_distribution }}.yml'
+        - '{{ ansible_os_family }}.yml'
+        - 'main.yml'
+      paths:
+        - 'vars'
+  loop_control:
+    loop_var: vars_file
 
-- name: "Ensure VictoriaMetrics service is enabled on boot"
-  systemd:
-    daemon_reload: true
-    name: victoriametrics
-    enabled: true
-    state: started
-  when: victoriametrics_install_standalone
-
-- name: "Ensure cluster service is enabled on boot"
-  systemd:
-    daemon_reload: true
-    name: "{{ item }}"
-    enabled: true
-    state: started
-  with_items: "{{ victoriametrics_cluster_role }}"
-  when: victoriametrics_install_cluster
+### Install
+- name: Import install tasks
+  import_tasks: install.yml
