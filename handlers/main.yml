@@ -1,24 +1,24 @@
 ---
 - name: Restart VictoriaMetrics service
-  service:
+  ansible.builtin.service:
     daemon_reload: true
     name: victoriametrics
     state: restarted
 
 - name: Restart vminsert service
-  service:
+  ansible.builtin.service:
     daemon_reload: true
     name: vminsert
     state: restarted
 
 - name: Restart vmselect service
-  service:
+  ansible.builtin.service:
     daemon_reload: true
     name: vmselect
     state: restarted
 
 - name: Restart vmstorage service
-  service:
+  ansible.builtin.service:
     daemon_reload: true
     name: vmstorage
     state: restarted

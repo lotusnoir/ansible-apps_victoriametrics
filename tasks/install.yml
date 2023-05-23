@@ -2,14 +2,14 @@
 - import_tasks: preinstall.yml
 
 - name: Create VictoriaMetrics system group
-  group:
+  ansible.builtin.group:
     name: "{{ victoriametrics_system_group }}"
     state: present
     system: true
   when: victoriametrics_system_group != "root"
 
 - name: Create VictoriaMetrics system user
-  user:
+  ansible.builtin.user:
     name: "{{ victoriametrics_system_user }}"
     groups: "{{ victoriametrics_system_group }}"
     append: true
@@ -19,13 +19,13 @@
   when: victoriametrics_system_user != "root"
 
 - name: Ensure existense of /usr/local/bin
-  file:
+  ansible.builtin.file:
     path: /usr/local/bin
     state: directory
     mode: 0755
 
 - name: Ensure existense of VictoriaMetrics storage directory
-  file:
+  ansible.builtin.file:
     path: "{{ victoriametrics_data_dir }}"
     state: directory
     mode: 0755
@@ -33,21 +33,22 @@
     group: "{{ victoriametrics_system_group }}"
 
 - name: "Install requierements"
-  package:
+  ansible.builtin.package:
     name: "ca-certificates"
     state: present
 
-- when: victoriametrics_install_standalone
+- name: "Install tasks"
+  when: victoriametrics_install_standalone
   block:
     - name: Delete existing VictoriaMetrics version if it's different.
-      file:
+      ansible.builtin.file:
         path: /usr/local/bin/victoria-metrics-prod
         state: absent
       when: victoriametrics_binary.stat.exists and
              victoriametrics_version not in victoriametrics_installed_version.stdout
 
     - name: Download and unarchive VictoriaMetrics release binary
-      unarchive:
+      ansible.builtin.unarchive:
         src: "{{ victoriametrics_url }}"
         dest: /usr/local/bin
         mode: 0751
@@ -60,10 +61,11 @@
         - not victoriametrics_binary.stat.exists or
           victoriametrics_version not in victoriametrics_installed_version.stdout
 
-- when: victoriametrics_install_vmutils
+- name: "Install tasks"
+  when: victoriametrics_install_vmutils
   block:
     - name: Delete existing vmutils version if it's different.
-      file:
+      ansible.builtin.file:
         path: "/usr/local/bin/{{ item }}"
         state: absent
       with_items:
@@ -77,7 +79,7 @@
             victoriametrics_vmutils_version not in vmutils_installed_version.stdout
 
     - name: Download and unarchive vmutils release binary
-      unarchive:
+      ansible.builtin.unarchive:
         src: "{{ victoriametrics_vmutils_url }}"
         dest: /usr/local/bin
         mode: 0751
@@ -89,10 +91,11 @@
         - not vmutils_binary.stat.exists or
           victoriametrics_vmutils_version not in vmutils_installed_version.stdout
 
-- when: victoriametrics_install_cluster
+- name: "Install tasks"
+  when: victoriametrics_install_cluster
   block:
     - name: Delete existing cluster binaries version if it's different.
-      file:
+      ansible.builtin.file:
         path: "/usr/local/bin/{{ item }}"
         state: absent
       with_items:
@@ -101,7 +104,7 @@
             victoriametrics_cluster_version not in cluster_role_version
 
     - name: Download and unarchive cluster release binary
-      unarchive:
+      ansible.builtin.unarchive:
         src: "{{ victoriametrics_cluster_url }}"
         dest: /usr/local/bin
         mode: 0751
@@ -117,7 +120,7 @@
 - import_tasks: configure.yml
 
 - name: "Ensure VictoriaMetrics service is enabled on boot"
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
     name: victoriametrics
     enabled: true
@@ -125,7 +128,7 @@
   when: victoriametrics_install_standalone
 
 - name: "Ensure cluster service is enabled on boot"
-  systemd:
+  ansible.builtin.systemd:
     daemon_reload: true
     name: "{{ item }}"
     enabled: true
