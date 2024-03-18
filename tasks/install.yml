@@ -1,5 +1,6 @@
 ---
-- import_tasks: preinstall.yml
+- name: Preinstall
+  ansible.builtin.import_tasks: preinstall.yml
 
 - name: Create VictoriaMetrics system group
   ansible.builtin.group:
@@ -117,7 +118,8 @@
         - not cluster_binary_exists or
           victoriametrics_cluster_version not in cluster_role_version
 
-- import_tasks: configure.yml
+- name: Configure
+  ansible.builtin.import_tasks: configure.yml
 
 - name: "Ensure VictoriaMetrics service is enabled on boot"
   ansible.builtin.systemd:

@@ -91,11 +91,11 @@
   when:
     - debug_exec
 
-- name: "set version facts"
+- name: "Set version facts"
   ansible.builtin.set_fact:
     cluster_role_version: "{{ cl_role_installed_version.results | json_query('[*].stdout') }}"
 
-- name: "set exists facts"
+- name: "Set exists facts"
   ansible.builtin.set_fact:
     cluster_binary_exists: true
   when: cluster_role_version|length == 0
