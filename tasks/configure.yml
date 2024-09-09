@@ -5,7 +5,7 @@
     dest: /etc/systemd/system/victoriametrics.service
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   notify: Restart VictoriaMetrics service
   no_log: true
   when: victoriametrics_install_standalone
@@ -16,7 +16,7 @@
     dest: "/etc/systemd/system/{{ item }}.service"
     owner: root
     group: root
-    mode: 0640
+    mode: '0640'
   notify: Restart {{ item }} service
   #no_log: True
   with_items:

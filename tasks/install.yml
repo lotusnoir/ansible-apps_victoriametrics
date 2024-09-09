@@ -23,13 +23,13 @@
   ansible.builtin.file:
     path: /usr/local/bin
     state: directory
-    mode: 0755
+    mode: '0755'
 
 - name: Ensure existense of VictoriaMetrics storage directory
   ansible.builtin.file:
     path: "{{ victoriametrics_data_dir }}"
     state: directory
-    mode: 0755
+    mode: '0755'
     owner: "{{ victoriametrics_system_user }}"
     group: "{{ victoriametrics_system_group }}"
 
@@ -37,6 +37,10 @@
   ansible.builtin.package:
     name: "ca-certificates"
     state: present
+  register: pkg_result
+  retries: 12
+  delay: 10
+  until: pkg_result is success
 
 - name: "Install tasks"
   when: victoriametrics_install_standalone
@@ -52,7 +56,7 @@
       ansible.builtin.unarchive:
         src: "{{ victoriametrics_url }}"
         dest: /usr/local/bin
-        mode: 0751
+        mode: '0751'
         owner: "{{ victoriametrics_system_user }}"
         group: "{{ victoriametrics_system_group }}"
         remote_src: true
@@ -83,7 +87,7 @@
       ansible.builtin.unarchive:
         src: "{{ victoriametrics_vmutils_url }}"
         dest: /usr/local/bin
-        mode: 0751
+        mode: '0751'
         owner: "{{ victoriametrics_system_user }}"
         group: "{{ victoriametrics_system_group }}"
         remote_src: true
@@ -108,7 +112,7 @@
       ansible.builtin.unarchive:
         src: "{{ victoriametrics_cluster_url }}"
         dest: /usr/local/bin
-        mode: 0751
+        mode: '0751'
         owner: "{{ victoriametrics_system_user }}"
         group: "{{ victoriametrics_system_group }}"
         remote_src: true
