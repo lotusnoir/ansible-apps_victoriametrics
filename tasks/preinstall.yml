@@ -70,11 +70,11 @@
   register: cl_role_binary
   with_items: "{{ victoriametrics_cluster_role }}"
 
-#- name: "DEBUG: show cluster role exists"
-#  debug:
-#    msg: "{{ cl_role_binary.results }}"
-#  when:
-#    - debug_exec
+# - name: "DEBUG: show cluster role exists"
+#   debug:
+#     msg: "{{ cl_role_binary.results }}"
+#   when:
+#     - debug_exec
 
 - name: Check current role version
   ansible.builtin.command: "/usr/local/bin/{{ item.item }}-prod --version"

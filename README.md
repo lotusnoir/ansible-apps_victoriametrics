@@ -3,8 +3,7 @@
 [![Galaxy Role](https://img.shields.io/badge/galaxy-apps_victoriametrics-purple?style=flat)](https://galaxy.ansible.com/lotusnoir/apps_victoriametrics)
 [![Version](https://img.shields.io/github/release/lotusnoir/ansible-apps_victoriametrics.svg)](https://github.com/lotusnoir/ansible-apps_victoriametrics/releases/latest)
 [![GitHub repo size](https://img.shields.io/github/repo-size/lotusnoir/ansible-apps_victoriametrics?color=orange&style=flat)](https://galaxy.ansible.com/lotusnoir/apps_victoriametrics)
-[![downloads](https://img.shields.io/ansible/role/d/56106)](https://galaxy.ansible.com/lotusnoir/apps_victoriametrics)
-[![Ansible Quality Score](https://img.shields.io/ansible/quality/56106)](https://galaxy.ansible.com/lotusnoir/apps_victoriametrics)
+[![downloads](https://img.shields.io/ansible/role/d/lotusnoir/apps_victoriametrics)](https://galaxy.ansible.com/lotusnoir/apps_victoriametrics)
 [![License](https://img.shields.io/badge/license-Apache--2.0-brightgreen?style=flat)](https://opensource.org/licenses/Apache-2.0)
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
@@ -22,6 +21,7 @@
 ## Description
 
 Deploy [victoriametrics](https://victoriametrics.com/) monitoring system.
+
 ## Requirements
 
 none
@@ -39,7 +39,6 @@ See [variables](/defaults/main.yml) for more details.
           gather_facts: true
           roles:
             - role: ansible-apps_victoriametrics
-
 
 ## License
 
